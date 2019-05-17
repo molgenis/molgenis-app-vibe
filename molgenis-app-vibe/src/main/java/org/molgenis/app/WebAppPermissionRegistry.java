@@ -54,6 +54,7 @@ import org.molgenis.searchall.controller.SearchAllPluginController;
 import org.molgenis.security.core.PermissionSet;
 import org.molgenis.securityui.controller.SecurityUiController;
 import org.molgenis.util.Pair;
+import org.molgenis.vibe.VibeJobExecutionMetadata;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.Sid;
@@ -121,6 +122,8 @@ public class WebAppPermissionRegistry implements PermissionRegistry {
     register(PLUGIN, MetadataManagerController.METADATA_MANAGER, manager, READ);
     register(ENTITY_TYPE, ResourceCopyJobExecutionMetadata.COPY_JOB_EXECUTION, manager, WRITE);
     register(ENTITY_TYPE, ResourceDeleteJobExecutionMetadata.DELETE_JOB_EXECUTION, manager, WRITE);
+    register(ENTITY_TYPE, VibeJobExecutionMetadata.VIBE_JOB_EXECUTION, anonymousUser, WRITE);
+    register(ENTITY_TYPE, FILE_META, anonymousUser, WRITE);
   }
 
   @Override
