@@ -47,7 +47,7 @@
             for (i = 1; i < lines.length; i++) {
               content += '<tr>'
               lines[i].split('\t').forEach((element, index) => {
-                if(index == 2) {
+                if(index >= 2) {
                   element = Math.round(element * 100) / 100
                 }
                 if(index == 1) {
