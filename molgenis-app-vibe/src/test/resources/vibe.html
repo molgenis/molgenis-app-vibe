@@ -57,18 +57,34 @@
             content += '</thead><tbody>';
             for (i = 1; i < lines.length; i++) {
               content += '<tr>'
-              lines[i].split('\t').forEach((element, index) => {
-                if(index == 3) {
-                  content += '<td style="white-space: pre;">';
-                  element.split('|').forEach((diseaseInfo, diseaseInfoIndex) => {
+              lines[i].split('\t').forEach((lineElement, lineIndex) => {
+                if(lineIndex == 0) { // ncbigene
+                  content += '<td><a href="http://identifiers.org/ncbigene/' + lineElement + '">' + lineElement + '</a></td>';
+                } else if(lineIndex == 1) { // hgnc symbol
+                  content += '<td><a href="http://identifiers.org/hgnc.symbol/' + lineElement + '">' + lineElement + '</a></td>';
+                } else if(lineIndex == 3) { // diseases with score & sources
+                  content += '<td style="white-space: pre;"><div style="width: 100%; overflow-x: scroll;">';
+                  lineElement.split('|').forEach((diseaseInfo, diseaseInfoIndex) => {
                     if(diseaseInfoIndex > 0) {
                       content += '<br />';
                     }
-                    content += diseaseInfo;
+                    // split disease + score from pubmed IDs
+                    var diseaseSplitSources = diseaseInfo.split(':');
+                    // disease + score
+                    var diseaseIdSplitScore = diseaseSplitSources[0].split(' ');
+                    content += '<a href="http://linkedlifedata.com/resource/umls/id/' + diseaseIdSplitScore[0] + '">' + diseaseIdSplitScore[0] + '</a> ' + diseaseIdSplitScore[1] + ': ';
+                    if(diseaseSplitSources[1] != null) {
+                      diseaseSplitSources[1].split(',').forEach((pubmed, pubmedIndex) => {
+                        if (pubmedIndex > 0) {
+                          content += ',';
+                        }
+                        content += '<a href="http://identifiers.org/pubmed/' + pubmed + '">' + pubmed + '</a>';
+                      });
+                    }
                   });
-                  content += '</td>';
+                  content += '</div></td>';
                 } else {
-                  content += '<td>' + element + '</td>';
+                  content += '<td>' + lineElement + '</td>';
                 }
               });
               content += '</tr>'
