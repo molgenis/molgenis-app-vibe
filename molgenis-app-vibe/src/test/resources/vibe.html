@@ -63,7 +63,7 @@
                 } else if(lineIndex == 1) { // hgnc symbol
                   content += '<td><a href="http://identifiers.org/hgnc.symbol/' + lineElement + '">' + lineElement + '</a></td>';
                 } else if(lineIndex == 3) { // diseases with score & sources
-                  content += '<td style="white-space: pre;"><div style="width: 100%; overflow-x: scroll;">';
+                  content += '<td style="white-space: pre;"><div style="width: 500px; overflow-x: scroll;">';
                   lineElement.split('|').forEach((diseaseInfo, diseaseInfoIndex) => {
                     if(diseaseInfoIndex > 0) {
                       content += '<br />';
