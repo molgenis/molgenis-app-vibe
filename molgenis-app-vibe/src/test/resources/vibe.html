@@ -16,7 +16,8 @@
               </div>
             </div>
             <small id="hpoTermsHelp" class="form-text text-muted">Comma-separated list of <a href="https://hpo.jax.org/">Human Phenotype Ontology</a> term identifiers (e.g. HP:0002996).</small>
-          </form></div>
+          </form>
+        </div>
         <div id="progress" style="display: none;">
           <div class="d-flex align-items-center">
             <strong>Your request is being processed, usually takes a couple of minutes ...</strong>
@@ -35,149 +36,151 @@
         <p id="resultText" style="display: none;">Done. Click <a id="resultAnchor">here</a> to download the result</p>
       </div>
     </div>
-    <script>
-      var value = getParameterByName('phenotypes', window.location.href);
-      console.log("pheno:" + value);
-      console.log("genes:" + getParameterByName('genes', window.location.href));
-      if(value){
-        document.getElementById('inputPhenotypes').value = value;
-        runVibe(value)
-      }
+  </div>
+</div>
+<script>
+  var value = getParameterByName('phenotypes', window.location.href);
+  console.log("pheno:" + value);
+  console.log("genes:" + getParameterByName('genes', window.location.href));
+  if(value){
+    document.getElementById('inputPhenotypes').value = value;
+    runVibe(value)
+  }
 
-      document.getElementById('previewTable').style.display = 'none';
-      document.getElementById('errorText').style.display = 'none';
-      document.getElementById('resultText').style.display = 'none';
-      document.getElementById('progress').style.display = 'none';
+  document.getElementById('previewTable').style.display = 'none';
+  document.getElementById('errorText').style.display = 'none';
+  document.getElementById('resultText').style.display = 'none';
+  document.getElementById('progress').style.display = 'none';
 
-      function handleCompletedVibeJob(jobExecution) {
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function() {
-          if (this.readyState != 4) return;
-          document.getElementById('executeButton').removeAttribute("disabled")
-          if (this.status == 200) {
-            var lines = JSON.parse(this.responseText);
+  function handleCompletedVibeJob(jobExecution) {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+      if (this.readyState != 4) return;
+      document.getElementById('executeButton').removeAttribute("disabled")
+      if (this.status == 200) {
+        var lines = JSON.parse(this.responseText);
 
-            var content = '<thead>';
-            lines[0].split('\t').forEach((element) => {
-              content += '<th>' + element + '</th>';
-            });
-            content += '</thead><tbody>';
-            for (i = 1; i < lines.length; i++) {
-              content += '<tr>'
-              lines[i].split('\t').forEach((lineElement, lineIndex) => {
-                if(lineIndex == 0) { // ncbigene
-                  content += '<td><a href="http://identifiers.org/ncbigene/' + lineElement + '">' + lineElement + '</a></td>';
-                } else if(lineIndex == 1) { // hgnc symbol
-                  content += '<td><a href="http://identifiers.org/hgnc.symbol/' + lineElement + '">' + lineElement + '</a></td>';
-                } else if(lineIndex == 3) { // diseases with score & sources
-                  content += '<td style="white-space:pre;"><div style="overflow-x:scroll;">';
-                  lineElement.split('|').forEach((diseaseInfo, diseaseInfoIndex) => {
-                    if(diseaseInfoIndex > 0) {
-                      content += '<br />';
+        var content = '<thead>';
+        lines[0].split('\t').forEach((element) => {
+          content += '<th>' + element + '</th>';
+        });
+        content += '</thead><tbody>';
+        for (i = 1; i < lines.length; i++) {
+          content += '<tr>'
+          lines[i].split('\t').forEach((lineElement, lineIndex) => {
+            if(lineIndex == 0) { // ncbigene
+              content += '<td><a href="http://identifiers.org/ncbigene/' + lineElement + '">' + lineElement + '</a></td>';
+            } else if(lineIndex == 1) { // hgnc symbol
+              content += '<td><a href="http://identifiers.org/hgnc.symbol/' + lineElement + '">' + lineElement + '</a></td>';
+            } else if(lineIndex == 3) { // diseases with score & sources
+              content += '<td style="white-space:pre;"><div style="overflow-x:scroll;">';
+              lineElement.split('|').forEach((diseaseInfo, diseaseInfoIndex) => {
+                if(diseaseInfoIndex > 0) {
+                  content += '<br />';
+                }
+                // split disease + score from pubmed IDs
+                var diseaseSplitSources = diseaseInfo.split(':');
+                // disease + score
+                var diseaseIdSplitScore = diseaseSplitSources[0].split(' ');
+                content += '<a href="http://linkedlifedata.com/resource/umls/id/' + diseaseIdSplitScore[0] + '">' + diseaseIdSplitScore[0] + '</a> ' + diseaseIdSplitScore[1] + ': ';
+                if(diseaseSplitSources[1] != null) {
+                  diseaseSplitSources[1].split(',').forEach((pubmed, pubmedIndex) => {
+                    if (pubmedIndex > 0) {
+                      content += ',';
                     }
-                    // split disease + score from pubmed IDs
-                    var diseaseSplitSources = diseaseInfo.split(':');
-                    // disease + score
-                    var diseaseIdSplitScore = diseaseSplitSources[0].split(' ');
-                    content += '<a href="http://linkedlifedata.com/resource/umls/id/' + diseaseIdSplitScore[0] + '">' + diseaseIdSplitScore[0] + '</a> ' + diseaseIdSplitScore[1] + ': ';
-                    if(diseaseSplitSources[1] != null) {
-                      diseaseSplitSources[1].split(',').forEach((pubmed, pubmedIndex) => {
-                        if (pubmedIndex > 0) {
-                          content += ',';
-                        }
-                        content += '<a href="http://identifiers.org/pubmed/' + pubmed + '">' + pubmed + '</a>';
-                      });
-                    }
+                    content += '<a href="http://identifiers.org/pubmed/' + pubmed + '">' + pubmed + '</a>';
                   });
-                  content += '</div></td>';
-                } else {
-                  content += '<td>' + lineElement + '</td>';
                 }
               });
-              content += '</tr>'
-            }
-            content += '</tbody>';
-
-            var table = document.getElementById('previewTable');
-            table.insertAdjacentHTML('beforeend', content);
-
-            document.getElementById('resultAnchor').setAttribute("href", jobExecution.resultUrl);
-            document.getElementById('previewTable').style.display = 'table';
-            document.getElementById('resultText').style.display = 'block';
-            document.getElementById('progress').style.display = 'none';
-          } else {
-            document.getElementById('previewTable').style.display = 'none';
-            document.getElementById('errorText').style.display = 'block';
-            document.getElementById('resultText').style.display = 'none';
-            document.getElementById('progress').style.display = 'none';
-          }
-        };
-        xhr.open('GET', '/api/vibe?id=' + jobExecution.identifier, true);
-        xhr.send();
-
-
-      }
-
-      function pollVibeJob(jobExecutionId) {
-        setTimeout(function() {
-          var xhr = new XMLHttpRequest();
-          xhr.onreadystatechange = function() {
-            if (this.readyState != 4) return;
-            if (this.status == 200) {
-              var jobExecution = JSON.parse(this.responseText);
-              if (jobExecution.status === 'PENDING' || jobExecution.status === 'RUNNING' || jobExecution.status === 'CANCELING') {
-                pollVibeJob(jobExecutionId);
-              } else {
-                handleCompletedVibeJob(jobExecution)
-              }
+              content += '</div></td>';
             } else {
-              document.getElementById('executeButton').removeAttribute("disabled")
-              document.getElementById('previewTable').style.display = 'none';
-              document.getElementById('errorText').style.display = 'block';
-              document.getElementById('resultText').style.display = 'none';
-              document.getElementById('progress').style.display = 'none';
+              content += '<td>' + lineElement + '</td>';
             }
-          };
-          xhr.open('GET', '/api/v2/sys_job_VibeJobExecution/' + jobExecutionId, true);
-          xhr.send();
-        }, 1000);
-      }
-      document.getElementById('vibe-form').addEventListener("submit", function(e) {
-        e.preventDefault();
-        document.getElementById('executeButton').setAttribute("disabled", "disabled")
+          });
+          content += '</tr>'
+        }
+        content += '</tbody>';
 
-        var value = document.getElementById('inputPhenotypes').value
+        var table = document.getElementById('previewTable');
+        table.insertAdjacentHTML('beforeend', content);
 
-        runVibe(value);
-      });
-
-      function getParameterByName(name, url) {
-        if (!url) url = window.location.href;
-        name = name.replace(/[\[\]]/g, '\\$&');
-        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-                results = regex.exec(url);
-        if (!results) return null;
-        if (!results[2]) return '';
-        return decodeURIComponent(results[2].replace(/\+/g, ' '));
-      }
-
-      function runVibe(value) {
+        document.getElementById('resultAnchor').setAttribute("href", jobExecution.resultUrl);
+        document.getElementById('previewTable').style.display = 'table';
+        document.getElementById('resultText').style.display = 'block';
+        document.getElementById('progress').style.display = 'none';
+      } else {
+        document.getElementById('previewTable').style.display = 'none';
+        document.getElementById('errorText').style.display = 'block';
         document.getElementById('resultText').style.display = 'none';
-        document.getElementById('progress').style.display = 'block';
-
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function() {
-          if (this.readyState != 4) return;
-          if (this.status == 200) {
-            pollVibeJob(JSON.parse(this.responseText).identifier);
-          } else {
-            document.getElementById('executeButton').removeAttribute("disabled")
-            document.getElementById('errorText').style.display = 'block';
-            document.getElementById('resultText').style.display = 'none';
-            document.getElementById('progress').style.display = 'none';
-          }
-        };
-        xhr.open('POST', '/api/vibe?p=' + value, true);
-        xhr.send();
+        document.getElementById('progress').style.display = 'none';
       }
-    </script>
+    };
+    xhr.open('GET', '/api/vibe?id=' + jobExecution.identifier, true);
+    xhr.send();
+
+
+  }
+
+  function pollVibeJob(jobExecutionId) {
+    setTimeout(function() {
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function() {
+        if (this.readyState != 4) return;
+        if (this.status == 200) {
+          var jobExecution = JSON.parse(this.responseText);
+          if (jobExecution.status === 'PENDING' || jobExecution.status === 'RUNNING' || jobExecution.status === 'CANCELING') {
+            pollVibeJob(jobExecutionId);
+          } else {
+            handleCompletedVibeJob(jobExecution)
+          }
+        } else {
+          document.getElementById('executeButton').removeAttribute("disabled")
+          document.getElementById('previewTable').style.display = 'none';
+          document.getElementById('errorText').style.display = 'block';
+          document.getElementById('resultText').style.display = 'none';
+          document.getElementById('progress').style.display = 'none';
+        }
+      };
+      xhr.open('GET', '/api/v2/sys_job_VibeJobExecution/' + jobExecutionId, true);
+      xhr.send();
+    }, 1000);
+  }
+  document.getElementById('vibe-form').addEventListener("submit", function(e) {
+    e.preventDefault();
+    document.getElementById('executeButton').setAttribute("disabled", "disabled")
+
+    var value = document.getElementById('inputPhenotypes').value
+
+    runVibe(value);
+  });
+
+  function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  }
+
+  function runVibe(value) {
+    document.getElementById('resultText').style.display = 'none';
+    document.getElementById('progress').style.display = 'block';
+
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+      if (this.readyState != 4) return;
+      if (this.status == 200) {
+        pollVibeJob(JSON.parse(this.responseText).identifier);
+      } else {
+        document.getElementById('executeButton').removeAttribute("disabled")
+        document.getElementById('errorText').style.display = 'block';
+        document.getElementById('resultText').style.display = 'none';
+        document.getElementById('progress').style.display = 'none';
+      }
+    };
+    xhr.open('POST', '/api/vibe?p=' + value, true);
+    xhr.send();
+  }
+</script>
