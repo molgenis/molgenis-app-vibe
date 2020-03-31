@@ -31,6 +31,8 @@
             <col style="width:92px;" />
             <col />
           </colgroup>
+          <thead></thead>
+          <tbody></tbody>
         </table>
         <p id="errorText" style="display: none;">Error occurred while processing request.</p>
         <p id="resultText" style="display: none;">Done. Click <a id="resultAnchor">here</a> to download the result</p>
@@ -148,6 +150,8 @@
   document.getElementById('vibe-form').addEventListener("submit", function(e) {
     e.preventDefault();
     document.getElementById('executeButton').setAttribute("disabled", "disabled")
+    jQuery('#previewTable > thead').remove();
+    jQuery('#previewTable > tbody').remove();
 
     var value = document.getElementById('inputPhenotypes').value
 
