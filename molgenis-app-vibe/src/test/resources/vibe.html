@@ -23,7 +23,14 @@
             <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
           </div>
         </div>
-        <table id="previewTable" class="table" style="display: none;"></table>
+        <table id="previewTable" class="table" style="display: none; table-layout: fixed;">
+          <colgroup>
+            <col style="width:92px;" />
+            <col style="width:92px;" />
+            <col style="width:92px;" />
+            <col />
+          </colgroup>
+        </table>
         <p id="errorText" style="display: none;">Error occurred while processing request.</p>
         <p id="resultText" style="display: none;">Done. Click <a id="resultAnchor">here</a> to download the result</p>
       </div>
@@ -63,7 +70,7 @@
                 } else if(lineIndex == 1) { // hgnc symbol
                   content += '<td><a href="http://identifiers.org/hgnc.symbol/' + lineElement + '">' + lineElement + '</a></td>';
                 } else if(lineIndex == 3) { // diseases with score & sources
-                  content += '<td style="white-space: pre;"><div style="width: 500px; overflow-x: scroll;">';
+                  content += '<td style="white-space:pre;"><div style="overflow-x:scroll;">';
                   lineElement.split('|').forEach((diseaseInfo, diseaseInfoIndex) => {
                     if(diseaseInfoIndex > 0) {
                       content += '<br />';
@@ -95,7 +102,7 @@
             table.insertAdjacentHTML('beforeend', content);
 
             document.getElementById('resultAnchor').setAttribute("href", jobExecution.resultUrl);
-            document.getElementById('previewTable').style.display = 'block';
+            document.getElementById('previewTable').style.display = 'table';
             document.getElementById('resultText').style.display = 'block';
             document.getElementById('progress').style.display = 'none';
           } else {
