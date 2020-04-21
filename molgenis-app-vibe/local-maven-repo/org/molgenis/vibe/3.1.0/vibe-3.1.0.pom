@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.molgenis</groupId>
+    <artifactId>vibe</artifactId>
+    <version>3.1.0</version>
+    <packaging>jar</packaging>
+
+    <scm>
+        <connection>
+            scm:git:https://${env.GITHUB_USER}:${env.GITHUB_TOKEN}@github.com/molgenis/vibe.git
+        </connection>
+        <url>https://github.com/molgenis/vibe</url>
+        <tag>vibe-3.1.0</tag>
+    </scm>
+
+    <properties>
+        <!-- fix for: https://maven.apache.org/general.html#encoding-warning -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- authentication for release scm plugin -->
+        <project.scm.id>github</project.scm.id>
+
+        <!-- defines java version of code -->
+        <java.version>1.8</java.version>
+
+        <!-- artifact publish properties -->
+        <sonatype.id>sonatype-nexus-staging</sonatype.id>
+
+        <!-- sonar configuration -->
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.organization>molgenis</sonar.organization>
+        <sonar.github.repository>molgenis/vibe</sonar.github.repository>
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+        <sonar.java.codeCoveragePlugin>jacoco</sonar.java.codeCoveragePlugin>
+        <sonar.coverage.jacoco.xmlReportPaths>${jacoco.merged-test.outputDir}/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+
+        <!-- vibe TDB information (requirement: vibe-tdb.version <= project.version) -->
+        <vibe-tdb.version>3.1.0</vibe-tdb.version>
+        <vibe-tdb.archive>vibe-${vibe-tdb.version}-tdb.tar.gz</vibe-tdb.archive>
+        <vibe-tdb.download>https://molgenis.org/downloads/vibe/${vibe-tdb.archive}</vibe-tdb.download>
+
+        <!-- used hpo.owl github tag -->
+        <hpo-owl.tag>v2019-11-08</hpo-owl.tag>
+        <hpo-owl.download>https://raw.githubusercontent.com/obophenotype/human-phenotype-ontology/${hpo-owl.tag}/hp.owl</hpo-owl.download>
+
+        <!-- defines created jar names -->
+        <jar.skinny>vibe-${project.version}</jar.skinny>
+        <jar.fat>vibe-with-dependencies-${project.version}</jar.fat>
+
+        <!-- thin jar dependencies directory -->
+        <jar.skinny.dependency-dir>dependency-jars</jar.skinny.dependency-dir>
+
+        <!-- jacoco configuration -->
+        <jacoco.unit-test.destFile>${jacoco.merged-test.fileSetDir}/jacoco-unit-tests.exec</jacoco.unit-test.destFile>
+        <jacoco.unit-test.dataFile>${jacoco.unit-test.destFile}</jacoco.unit-test.dataFile>
+        <jacoco.unit-test.outputDir>${project.reporting.outputDirectory}/jacoco-unit-test-coverage-report</jacoco.unit-test.outputDir>
+
+        <jacoco.integration-test.destFile>${jacoco.merged-test.fileSetDir}/jacoco-integration-tests.exec</jacoco.integration-test.destFile>
+        <jacoco.integration-test.dataFile>${jacoco.integration-test.destFile}</jacoco.integration-test.dataFile>
+        <jacoco.integration-test.outputDir>${project.reporting.outputDirectory}/jacoco-integration-test-coverage-report</jacoco.integration-test.outputDir>
+
+        <jacoco.merged-test.fileSetDir>${project.build.directory}/jacoco-output</jacoco.merged-test.fileSetDir>
+        <jacoco.merged-test.destFile>${jacoco.merged-test.fileSetDir}/jacoco-merged-tests.exec</jacoco.merged-test.destFile>
+        <jacoco.merged-test.dataFile>${jacoco.merged-test.destFile}</jacoco.merged-test.dataFile>
+        <jacoco.merged-test.outputDir>${project.reporting.outputDirectory}/jacoco-merged-test-coverage-report</jacoco.merged-test.outputDir>
+        
+        <!-- plugin versions -->
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
+        <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
+        <maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
+        <dockerfile-maven-plugin.version>1.4.10</dockerfile-maven-plugin.version>
+        <checksum-maven-plugin.version>1.8</checksum-maven-plugin.version>
+        <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>2.22.2</maven-failsafe-plugin.version>
+        <sonar-maven-plugin.version>3.5.0.1254</sonar-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
+        <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
+        <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+        <pgp-maven-plugin.version>1.1</pgp-maven-plugin.version>
+
+        <!-- dependency versions -->
+        <slf4j-nop.version>1.7.29</slf4j-nop.version>
+        <apache-jena-libs.version>3.13.1</apache-jena-libs.version>
+        <commons-cli.version>1.4</commons-cli.version>
+        <junit-jupiter.version>5.6.0</junit-jupiter.version>
+        <mockito.version>1.10.19</mockito.version>
+    </properties>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>${sonatype.id}</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>${sonatype.id}</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+    <build>
+        <plugins>
+            <!-- define java version -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <compilerArguments>
+                        <Xlint />
+                    </compilerArguments>
+                </configuration>
+            </plugin>
+
+            <!-- create skinny jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven-jar-plugin.version}</version>
+                <configuration>
+                    <finalName>${jar.skinny}</finalName>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>org.molgenis.vibe.VibeApplication</mainClass>
+                            <classpathPrefix>${jar.skinny.dependency-dir}</classpathPrefix>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <!-- generate dependency jars -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${maven-dependency-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/${jar.skinny.dependency-dir}/</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- create fat jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${maven-shade-plugin.version}</version>
+                <executions>
+                    <!-- run shade at package phase -->
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <!-- manifest file adjustments -->
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <manifestEntries>
+                                        <!-- set main class -->
+                                        <Main-Class>org.molgenis.vibe.VibeApplication</Main-Class>
+                                        <!-- clears class-path added by maven-jar-plugin -->
+                                        <Class-Path />
+                                    </manifestEntries>
+                                </transformer>
+                                <!-- prevent license duplications -->
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
+                                <!-- manages META_INF/services/ files for usage in shaded jar -->
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                            </transformers>
+                            <!-- file name of shaded jar -->
+                            <finalName>${jar.fat}</finalName>
+                            <!-- excludes all classes of dependencies that are not used (also excludes non-specified classes) -->
+                            <!-- <minimizeJar>true</minimizeJar> -->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Generating Docker image -->
+            <!-- Does not run by default but you can explicitly call dockerfile:build dockerfile:tag dockerfile:push -->
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>${dockerfile-maven-plugin.version}</version>
+                <configuration>
+                    <repository>registry.hub.docker.com/molgenis/vibe</repository>
+                    <tag>${project.version}</tag>
+                    <buildArgs>
+                        <jar_file>${jar.fat}.jar</jar_file>
+                        <vibe_tdb_archive>${vibe-tdb.archive}</vibe_tdb_archive>
+                        <vibe_tdb_download>${vibe-tdb.download}</vibe_tdb_download>
+                        <hpo_owl_download>${hpo-owl.download}</hpo_owl_download>
+                    </buildArgs>
+                    <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
+                </configuration>
+            </plugin>
+
+            <!-- checksum creation -->
+            <plugin>
+                <groupId>net.nicoulaj.maven.plugins</groupId>
+                <artifactId>checksum-maven-plugin</artifactId>
+                <version>${checksum-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>files</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <fileSets>
+                        <fileSet>
+                            <directory>target</directory>
+                            <includes>
+                                <include>${jar.skinny}.jar</include>
+                                <include>${jar.fat}.jar</include>
+                                <!--<include>${jar.skinny.dependency-dir}/*</include>-->
+                            </includes>
+                        </fileSet>
+                    </fileSets>
+                    <algorithms>
+                        <!-- see: https://en.wikipedia.org/wiki/Secure_Hash_Algorithms -->
+                        <algorithm>MD5</algorithm>
+                        <algorithm>SHA-512</algorithm>
+                        <algorithm>SHA3-512</algorithm>
+                    </algorithms>
+                    <csvSummary>true</csvSummary> <!-- creates csv summary file with all checksums -->
+                    <individualFiles>true</individualFiles> <!-- individual file per checksum and per artifact -->
+                    <individualFilesOutputDirectory>checksums</individualFilesOutputDirectory> <!-- dir for individual files -->
+                </configuration>
+            </plugin>
+
+            <!-- sets parameters for unit testing -->
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${maven-failsafe-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- integrates SonarQube -->
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>${sonar-maven-plugin.version}</version>
+            </plugin>
+
+            <!-- JAva COde COverage -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco-maven-plugin.version}</version>
+                <executions>
+                    <!-- unit tests -->
+                    <execution>
+                        <id>pre-unit-test</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <destFile>${jacoco.unit-test.destFile}</destFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>post-unit-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>${jacoco.unit-test.dataFile}</dataFile>
+                            <outputDirectory>${jacoco.unit-test.outputDir}</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <!-- integration tests -->
+                    <execution>
+                        <id>pre-integration-test</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <destFile>${jacoco.integration-test.destFile}</destFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>post-integration-test</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>${jacoco.integration-test.dataFile}</dataFile>
+                            <outputDirectory>${jacoco.integration-test.outputDir}</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <!-- tests combined -->
+                    <execution>
+                        <id>merge-unit-and-integration</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>merge</goal>
+                        </goals>
+                        <configuration>
+                            <fileSets>
+                                <fileSet>
+                                    <directory>${jacoco.merged-test.fileSetDir}</directory>
+                                    <includes>
+                                        <include>*.exec</include>
+                                    </includes>
+                                </fileSet>
+                            </fileSets>
+                            <destFile>${jacoco.merged-test.destFile}</destFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>create-merged-report</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>${jacoco.merged-test.dataFile}</dataFile>
+                            <outputDirectory>${jacoco.merged-test.outputDir}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- deploy to sonatype nexus -->
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>${nexus-staging-maven-plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>${sonatype.id}</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <!-- closing the repo in the build fails miserably with a connection reset error -->
+                    <skipStagingRepositoryClose>true</skipStagingRepositoryClose>
+                </configuration>
+            </plugin>
+
+            <!-- plugin for releasing -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>${maven-release-plugin.version}</version>
+                <configuration>
+                    <scmCommentPrefix>[ci skip] [maven-release-plugin]${line.separator}</scmCommentPrefix>
+                </configuration>
+            </plugin>
+
+            <!-- sign artifacts -->
+            <plugin>
+                <!-- sign in a non-interactive way -->
+                <groupId>org.kohsuke</groupId>
+                <artifactId>pgp-maven-plugin</artifactId>
+                <version>${pgp-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <!-- Disables 'SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".' warnings, see: https://www.slf4j.org/codes.html#StaticLoggerBinder -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>${slf4j-nop.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>apache-jena-libs</artifactId>
+            <version>${apache-jena-libs.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+            <type>pom</type>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+            <version>${commons-cli.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

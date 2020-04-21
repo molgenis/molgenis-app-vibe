@@ -24,6 +24,9 @@
     <dockerfile-maven-plugin.version>1.4.10</dockerfile-maven-plugin.version>
     <dependency-check-maven.version>3.1.2</dependency-check-maven.version>
     <rpm-maven-plugin.version>2.2.0</rpm-maven-plugin.version>
+
+    <vibe.version>3.1.0</vibe.version>
+    <vibe-tdb.version>3.1.0</vibe-tdb.version>
   </properties>
 
   <build>
@@ -133,7 +136,7 @@
     <dependency>
       <groupId>org.molgenis</groupId>
       <artifactId>vibe</artifactId>
-      <version>3.0.0</version>
+      <version>${vibe.version}</version>
       <exclusions>
         <exclusion>
           <groupId>org.slf4j</groupId>

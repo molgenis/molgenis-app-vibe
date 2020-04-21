@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import org.molgenis.data.DataService;
 import org.molgenis.data.file.FileStore;
 import org.molgenis.data.file.model.FileMeta;
@@ -52,7 +53,16 @@ class VibeServiceImpl implements VibeService {
   }
 
   private File executeVibeCli(List<String> phenotypes) throws IOException {
-    Path vibeDataPath = Paths.get(AppDataRootProvider.getAppDataRoot().toString(), "data", "vibe");
+    InputStream propertiesStream =
+        getClass().getClassLoader().getResourceAsStream("molgenis-app-vibe.properties");
+    Properties properties = new Properties();
+    properties.load(propertiesStream);
+
+    Path vibeDataPath =
+        Paths.get(
+            AppDataRootProvider.getAppDataRoot().toString(),
+            "data",
+            properties.getProperty("vibe-tdb.dir"));
     File outputFile = File.createTempFile("vibe", ".tsv");
     String outputPath = outputFile.getPath();
     boolean deleteOk = outputFile.delete();
