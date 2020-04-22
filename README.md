@@ -6,7 +6,7 @@ genome diagnostics to prioritize genes by matching patient symptoms to literatur
 
 ### Create local test environment
 1. Follow the instructions as described on <a href="https://molgenis.gitbooks.io/molgenis/content/v/8.1/guide-development.html#setting-your-molgenis-server-properties">Developing MOLGENIS</a> and <a href="https://molgenis.gitbooks.io/molgenis/content/v/8.1/guide-using-an-ide.html">Using an IDE (Intellij)</a> (select Java 11 JDK & language level 11 instead).
-2. Extract the content of <a href="molgenis.org/downloads/vibe/vibe-3.1.0-tdb.tar.gz">vibe-3.1.0-tdb.tar.gz</a> to `<MOLGENIS_HOME>/data/vibe`.
+2. Extract the content of <a href="https://molgenis.org/downloads/vibe/vibe-3.1.0-tdb.tar.gz">vibe-3.1.0-tdb.tar.gz</a> to `<MOLGENIS_HOME>/data/vibe`.
 3. Launch the application.
 4. Configure the homepage:
     1. Sign in as superuser.
