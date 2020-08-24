@@ -82,8 +82,11 @@
         </table>
 
         <p id="errorText">Error occurred while processing request.</p>
-        <p id="resultText">Click <a id="resultAnchor">here</a> to download the result.
-          <br /><b>IMPORTANT:</b> The "count" field (which is not used within the app) is currently unreliable!</p>
+        <p id="resultText">
+          Click <a id="resultAnchor">here</a> to download the result.
+          <br /><b>IMPORTANT:</b> The "count" field (which is not used within the app) is currently unreliable!
+        </p>
+        <p id="resultTextEmpty">No results found.</p>
       </div>
     </div>
   </div>
@@ -117,6 +120,7 @@
   document.getElementById('previewTable').style.display = 'none';
   document.getElementById('errorText').style.display = 'none';
   document.getElementById('resultText').style.display = 'none';
+  document.getElementById('resultTextEmpty').style.display = 'none';
   document.getElementById('progress').style.display = 'none';
 
   function handleCompletedVibeJob(jobExecution) {
@@ -138,12 +142,17 @@
         // Layout changes.
         document.getElementById('resultAnchor').setAttribute("href", jobExecution.resultUrl);
         document.getElementById('previewTable').style.display = 'table';
-        document.getElementById('resultText').style.display = 'block';
+        if(parsedJson['combinations'].length > 0) {
+          document.getElementById('resultText').style.display = 'block';
+        } else {
+          document.getElementById('resultTextEmpty').style.display = 'block';
+        }
         document.getElementById('progress').style.display = 'none';
       } else {
         document.getElementById('previewTable').style.display = 'none';
         document.getElementById('errorText').style.display = 'block';
         document.getElementById('resultText').style.display = 'none';
+        document.getElementById('resultTextEmpty').style.display = 'none';
         document.getElementById('progress').style.display = 'none';
       }
     };
@@ -347,6 +356,7 @@
           document.getElementById('previewTable').style.display = 'none';
           document.getElementById('errorText').style.display = 'block';
           document.getElementById('resultText').style.display = 'none';
+          document.getElementById('resultTextEmpty').style.display = 'none';
           document.getElementById('progress').style.display = 'none';
         }
       };
@@ -377,6 +387,7 @@
 
   function runVibe(value) {
     document.getElementById('resultText').style.display = 'none';
+    document.getElementById('resultTextEmpty').style.display = 'none';
     document.getElementById('progress').style.display = 'block';
 
     var xhr = new XMLHttpRequest();
@@ -388,6 +399,7 @@
         document.getElementById('executeButton').removeAttribute("disabled");
         document.getElementById('errorText').style.display = 'block';
         document.getElementById('resultText').style.display = 'none';
+        document.getElementById('resultTextEmpty').style.display = 'none';
         document.getElementById('progress').style.display = 'none';
       }
     };
