@@ -2,26 +2,16 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.molgenis</groupId>
-    <artifactId>molgenis</artifactId>
+    <artifactId>molgenis-vibe</artifactId>
     <version>8.1.8-VIBE-1.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>molgenis-app-vibe</artifactId>
   <packaging>war</packaging>
 
-  <name>app-vibe</name>
-  <description>MOLGENIS vibe application module containing all default plugins.</description>
-
   <properties>
     <owasp-check-format>HTML</owasp-check-format>
-
-    <dockerfile.tag>${project.version}</dockerfile.tag>
-    <dockerfile.repository>registry.hub.docker.com/molgenis/molgenis-app-vibe</dockerfile.repository>
-    <dockerfile.warfile.version>${project.version}</dockerfile.warfile.version>
-    <dockerfile.warfile>target/${project.artifactId}-${dockerfile.warfile.version}.war</dockerfile.warfile>
-
     <rpm.release.version>${project.version}</rpm.release.version>
 
-    <dockerfile-maven-plugin.version>1.4.10</dockerfile-maven-plugin.version>
     <dependency-check-maven.version>3.1.2</dependency-check-maven.version>
     <rpm-maven-plugin.version>2.2.0</rpm-maven-plugin.version>
 
@@ -37,21 +27,6 @@
       </resource>
     </resources>
     <plugins>
-      <!-- Docker image containing the warfile -->
-      <!-- Does not run by default but you can explicitly call dockerfile:build dockerfile:tag dockerfile:push -->
-      <plugin>
-        <groupId>com.spotify</groupId>
-        <artifactId>dockerfile-maven-plugin</artifactId>
-        <version>${dockerfile-maven-plugin.version}</version>
-        <configuration>
-          <repository>${dockerfile.repository}</repository>
-          <tag>${dockerfile.tag}</tag>
-          <buildArgs>
-            <WAR_FILE>${dockerfile.warfile}</WAR_FILE>
-          </buildArgs>
-          <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
-        </configuration>
-      </plugin>
       <!-- create an RPM artifact of MOLGENIS -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>

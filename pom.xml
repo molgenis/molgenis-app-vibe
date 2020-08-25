@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.molgenis</groupId>
-  <artifactId>molgenis</artifactId>
+  <artifactId>molgenis-vibe</artifactId>
   <version>8.1.8-VIBE-1.0.0-SNAPSHOT</version>
   <parent>
     <groupId>org.springframework.boot</groupId>
@@ -12,11 +12,12 @@
   <packaging>pom</packaging>
 
   <!-- More Project Information -->
-  <name>MOLGENIS</name>
+  <name>MOLGENIS vibe</name>
   <description>
-    MOLGENIS is a collaborative open source project on a mission to generate great software
-    infrastructure for life
-    science research
+    MOLGENIS is a collaborative open source project on a mission to generate great software infrastructure for life
+    science research.
+
+    The molgenis vibe module contains all default plugins and allows running vibe on MOLGENIS.
   </description>
   <url>http://www.molgenis.org</url>
   <licenses>
@@ -25,8 +26,8 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:git:https://${env.GITHUB_USER}:${env.GITHUB_TOKEN}@github.com/molgenis/molgenis-vibe.git</connection>
-    <url>https://github.com/molgenis/molgenis-vibe</url>
+    <connection>scm:git:https://${env.GITHUB_USER}:${env.GITHUB_TOKEN}@github.com/molgenis/molgenis-app-vibe.git</connection>
+    <url>https://github.com/molgenis/molgenis-app-vibe</url>
     <tag>HEAD</tag>
   </scm>
 
@@ -34,12 +35,16 @@
     <developer>
       <name>MOLGENIS development team</name>
       <email>molgenis@gmail.com</email>
-      <organization>University Medical Centre Groningen, System Genetics, Genomics Coordination
-        Centre
+      <organization>University Medical Centre Groningen, System Genetics, Genomics Coordination Centre
       </organization>
       <organizationUrl>http://www.molgenis.org</organizationUrl>
     </developer>
   </developers>
+
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/molgenis/molgenis-app-vibe/issues</url>
+  </issueManagement>
 
   <properties>
     <molgenis.version>8.1.8</molgenis.version>
@@ -61,7 +66,7 @@
     <!-- code quality monitoring properties -->
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.organization>molgenis</sonar.organization>
-    <sonar.github.repository>molgenis/molgenis</sonar.github.repository>
+    <sonar.github.repository>molgenis/molgenis-app-vibe</sonar.github.repository>
     <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
     <sonar.java.codeCoveragePlugin>jacoco</sonar.java.codeCoveragePlugin>
 
