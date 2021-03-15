@@ -63,10 +63,11 @@ class VibeServiceImpl implements VibeService {
     Properties properties = new Properties();
     properties.load(propertiesStream);
 
-    Path databasePath = Paths.get(
-        AppDataRootProvider.getAppDataRoot().toString(),
-        "data",
-        properties.getProperty("vibe-hdt.file"));
+    Path databasePath =
+        Paths.get(
+            AppDataRootProvider.getAppDataRoot().toString(),
+            "data",
+            properties.getProperty("vibe-hdt.file"));
 
     return new VibeDatabase(databasePath, ModelReaderFactory.HDT);
   }
