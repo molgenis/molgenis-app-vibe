@@ -22,6 +22,8 @@ import org.molgenis.util.AppDataRootProvider;
 import org.molgenis.vibe.core.GeneDiseaseCollectionRetrievalRunner;
 import org.molgenis.vibe.core.formats.GeneDiseaseCollection;
 import org.molgenis.vibe.core.formats.Phenotype;
+import org.molgenis.vibe.core.io.input.ModelReaderFactory;
+import org.molgenis.vibe.core.io.input.VibeDatabase;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -40,7 +42,7 @@ class VibeServiceImpl implements VibeService {
   public FileMeta retrieveGeneDiseaseCollection(
       Set<Phenotype> phenotypes, String filename, Progress progress) throws IOException {
     GeneDiseaseCollection collection =
-        new GeneDiseaseCollectionRetrievalRunner(retrieveTdbLocation(), phenotypes).call();
+        new GeneDiseaseCollectionRetrievalRunner(retrieveDatabase(), phenotypes).call();
     String collectionJson = VibeSerializer.serializeGeneDiseaseCollection(collection);
 
     FileMeta fileMeta;
@@ -55,16 +57,18 @@ class VibeServiceImpl implements VibeService {
     return fileMeta;
   }
 
-  private Path retrieveTdbLocation() throws IOException {
+  private VibeDatabase retrieveDatabase() throws IOException {
     InputStream propertiesStream =
         getClass().getClassLoader().getResourceAsStream("molgenis-app-vibe.properties");
     Properties properties = new Properties();
     properties.load(propertiesStream);
 
-    return Paths.get(
+    Path databasePath = Paths.get(
         AppDataRootProvider.getAppDataRoot().toString(),
         "data",
-        properties.getProperty("vibe-tdb.dir"));
+        properties.getProperty("vibe-hdt.file"));
+
+    return new VibeDatabase(databasePath, ModelReaderFactory.HDT);
   }
 
   private FileMeta createFileMeta(File file) {
