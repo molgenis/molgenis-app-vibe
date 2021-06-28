@@ -39,17 +39,6 @@ After changes were made to the code, be sure to start from step 3.
 
 If the layout is missing on certain pages, stop the Docker application, run `docker system prune` and start from step 4.
 
-### Build new version for deployment.
-
-1. `cd /path/to/vibe`
-2. `mvn clean install`
-3. `mvn install:install-file -Dfile=/path/to/vibe/app/target/vibe-with-dependencies-<version>.jar -DgroupId=org.molgenis -DartifactId=vibe -Dversion=<version> -Dpackaging=jar`
-4. `cp -r /path/to/.m2/repository/org/molgenis/vibe/<version> /path/to/molgenis-app-vibe/molgenis-app-vibe/local-maven-repo/org/molgenis/vibe`
-5. `rm /path/to/molgenis-app-vibe/molgenis-app-vibe/local-maven-repo/org/molgenis/vibe/<version>/_remote.repositories`
-6. `cd /path/to/molgenis-app-vibe`
-7. Edit `molgenis-app-vibe/pom.xml` to use new vibe-version as dependency (and if a new TDB is required, adjust this as well).
-8. `mvn clean install`
-
 
 
 [vibe]: https://github.com/molgenis/vibe
