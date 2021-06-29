@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.molgenis</groupId>
   <artifactId>molgenis-vibe</artifactId>
-  <version>8.1.8-VIBE-1.1.0</version> <!-- first part should be equal to ${molgenis.version}!!! -->
+  <version>8.1.8-VIBE-1.1.0-SNAPSHOT</version> <!-- first part should be equal to ${molgenis.version}!!! -->
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
