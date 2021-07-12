@@ -116,7 +116,7 @@ pipeline {
                 }
                 stage('Prepare Release [ x.x ]') {
                     steps {
-                        timeout(time: 10, unit: 'MINUTES') {
+                        timeout(time: 40, unit: 'MINUTES') {
                             input(message: 'Prepare to release?')
                         }
                         container('maven') {
