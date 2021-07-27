@@ -5,7 +5,7 @@ services:
         context: .
         args:
           WAR_FILE: target/molgenis-app-*.war
-          VIBE_DATA: https://molgenis.org/downloads/vibe/vibe-5.0.0-hdt.tar.gz
+          VIBE_DATA: https://molgenis.org/downloads/vibe/vibe-5.1.0-hdt.tar.gz
 
       ports:
         - 8081:8080
