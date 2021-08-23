@@ -102,7 +102,7 @@ pipeline {
         }
         stage('Steps [ x.x ]') {
             when {
-                expression { BRANCH_NAME ==~ /[0-9]\.[0-9]/ }
+                expression { BRANCH_NAME ==~ /[0-9]+\.[0-9]+/ }
                 beforeAgent true
             }
             stages {
@@ -116,7 +116,7 @@ pipeline {
                 }
                 stage('Prepare Release [ x.x ]') {
                     steps {
-                        timeout(time: 10, unit: 'MINUTES') {
+                        timeout(time: 40, unit: 'MINUTES') {
                             input(message: 'Prepare to release?')
                         }
                         container('maven') {
