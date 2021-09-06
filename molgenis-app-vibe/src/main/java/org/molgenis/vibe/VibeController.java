@@ -6,6 +6,7 @@ import static org.molgenis.vibe.VibeJobExecutionMetadata.VIBE_JOB_EXECUTION;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import org.molgenis.data.DataService;
 import org.molgenis.data.UnknownEntityException;
@@ -75,8 +76,10 @@ class VibeController {
     File file = fileStore.getFile(fileId);
 
     // Retrieves GeneDiseaseCollection from json file.
-    GeneDiseaseCollection collection =
-        GeneDiseaseCollectionJsonConverter.readJsonStream(new FileInputStream(file));
+    GeneDiseaseCollection collection;
+    try(InputStream inputStream = new FileInputStream(file)) {
+      collection = GeneDiseaseCollectionJsonConverter.readJsonStream(inputStream);
+    }
 
     // Retrieves priority.
     GenePrioritizer prioritizer = new HighestSingleDisgenetScoreGenePrioritizer();
