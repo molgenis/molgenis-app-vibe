@@ -8,9 +8,9 @@ import org.molgenis.vibe.core.formats.GeneDiseaseCollectionDeserializer;
 import org.molgenis.vibe.core.formats.GeneDiseaseCollectionSerializer;
 
 /**
- * Use {@link
- * org.molgenis.vibe.core.formats.serialization.json.gene_disease_collection.GeneDiseaseCollectionJsonConverter}
- * instead.
+ * @deprecated Use {@link
+ *     org.molgenis.vibe.core.formats.serialization.json.gene_disease_collection.GeneDiseaseCollectionJsonConverter}
+ *     instead.
  */
 @Deprecated
 public abstract class VibeSerializer {

@@ -43,15 +43,12 @@ class VibeServiceImpl implements VibeService {
     try (PipedInputStream in = new PipedInputStream()) {
       try (PipedOutputStream out = new PipedOutputStream(in)) {
         new Thread(
-                new Runnable() {
-                  @Override
-                  public void run() {
-                    try {
-                      GeneDiseaseCollectionJsonConverter.writeJsonStream(
-                          out, retriever.getGeneDiseaseCollection());
-                    } catch (IOException e) {
-                      e.printStackTrace();
-                    }
+                () -> {
+                  try {
+                    GeneDiseaseCollectionJsonConverter.writeJsonStream(
+                        out, retriever.getGeneDiseaseCollection());
+                  } catch (IOException e) {
+                    e.printStackTrace();
                   }
                 })
             .start();
