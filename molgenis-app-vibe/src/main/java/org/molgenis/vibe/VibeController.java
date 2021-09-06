@@ -77,7 +77,7 @@ class VibeController {
 
     // Retrieves GeneDiseaseCollection from json file.
     GeneDiseaseCollection collection;
-    try(InputStream inputStream = new FileInputStream(file)) {
+    try (InputStream inputStream = new FileInputStream(file)) {
       collection = GeneDiseaseCollectionJsonConverter.readJsonStream(inputStream);
     }
 
