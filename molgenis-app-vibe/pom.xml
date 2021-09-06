@@ -15,7 +15,7 @@
     <dependency-check-maven.version>3.1.2</dependency-check-maven.version>
     <rpm-maven-plugin.version>2.2.0</rpm-maven-plugin.version>
 
-    <vibe.version>5.2.0-SNAPSHOT</vibe.version>
+    <vibe.version>5.2.0</vibe.version>
     <vibe-hdt.version>5.1.0</vibe-hdt.version>
   </properties>
 
