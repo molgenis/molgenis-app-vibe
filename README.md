@@ -7,7 +7,7 @@ genome diagnostics to prioritize genes by matching patient symptoms to literatur
 
 ### Create local test environment
 
-1. Set the memory in your docker resources to 8GB.
+1. Set the memory in your docker resources to 4GB.
 2. Open the terminal and go to the `molgenis-app-vibe/molgenis-app-vibe` folder.
 3. Run:
     ```bash
