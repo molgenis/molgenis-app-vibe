@@ -3,12 +3,10 @@ package org.molgenis.vibe;
 import static java.util.Objects.requireNonNull;
 import static org.molgenis.vibe.VibeJobExecutionMetadata.VIBE_JOB_EXECUTION;
 
-import com.google.gson.stream.JsonReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
+import java.io.InputStream;
 import java.util.List;
 import org.molgenis.data.DataService;
 import org.molgenis.data.UnknownEntityException;
@@ -18,6 +16,7 @@ import org.molgenis.jobs.model.JobExecution;
 import org.molgenis.jobs.model.JobExecution.Status;
 import org.molgenis.vibe.core.formats.Gene;
 import org.molgenis.vibe.core.formats.GeneDiseaseCollection;
+import org.molgenis.vibe.core.formats.serialization.json.gene_disease_collection.GeneDiseaseCollectionJsonConverter;
 import org.molgenis.vibe.core.query_output_digestion.prioritization.gene.GenePrioritizer;
 import org.molgenis.vibe.core.query_output_digestion.prioritization.gene.HighestSingleDisgenetScoreGenePrioritizer;
 import org.molgenis.vibe.response.GeneDiseaseCollectionResponse;
@@ -77,15 +76,14 @@ class VibeController {
     File file = fileStore.getFile(fileId);
 
     // Retrieves GeneDiseaseCollection from json file.
-    GeneDiseaseCollection geneDiseaseCollection;
-    try (JsonReader jsonReader =
-        new JsonReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
-      geneDiseaseCollection = VibeSerializer.deserializeGeneDiseaseCollection(jsonReader);
+    GeneDiseaseCollection collection;
+    try (InputStream inputStream = new FileInputStream(file)) {
+      collection = GeneDiseaseCollectionJsonConverter.readJsonStream(inputStream);
     }
 
     // Retrieves priority.
     GenePrioritizer prioritizer = new HighestSingleDisgenetScoreGenePrioritizer();
-    List<Gene> genePriority = prioritizer.sort(geneDiseaseCollection);
+    List<Gene> genePriority = prioritizer.sort(collection);
 
     // Generates subset.
     GeneDiseaseCollection geneDiseaseCombinationOutput = new GeneDiseaseCollection();
@@ -95,7 +93,7 @@ class VibeController {
       outputLimit = genePriority.size();
     }
     for (int i = 0; i < outputLimit; i++) {
-      geneDiseaseCombinationOutput.addAll(geneDiseaseCollection.getByGene(genePriority.get(i)));
+      geneDiseaseCombinationOutput.addAll(collection.getByGene(genePriority.get(i)));
     }
 
     // Returns subset.
