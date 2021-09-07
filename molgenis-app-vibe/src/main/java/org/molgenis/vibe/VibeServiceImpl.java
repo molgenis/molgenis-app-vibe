@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.io.UncheckedIOException;
 import java.util.Set;
 import org.molgenis.data.DataService;
 import org.molgenis.data.file.FileStore;
@@ -48,7 +49,7 @@ class VibeServiceImpl implements VibeService {
                     GeneDiseaseCollectionJsonConverter.writeJsonStream(
                         out, retriever.getGeneDiseaseCollection());
                   } catch (IOException e) {
-                    e.printStackTrace();
+                    throw new UncheckedIOException(e);
                   }
                 })
             .start();
