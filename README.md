@@ -1,3 +1,5 @@
+[![Build Status](https://app.travis-ci.com/molgenis/molgenis-app-vibe.svg?branch=master)](https://app.travis-ci.com/molgenis/molgenis-app-vibe)
+
 # molgenis-app-vibe
 
 User interface for [VIBE][vibe]: a pipeline-friendly software tool for
