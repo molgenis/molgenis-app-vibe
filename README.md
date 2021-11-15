@@ -1,5 +1,5 @@
 [![Build Status](https://app.travis-ci.com/molgenis/molgenis-app-vibe.svg?branch=master)](https://app.travis-ci.com/molgenis/molgenis-app-vibe)
-[![Quality Status](https://sonarcloud.io/api/project_badges/measure?project=molgenis-vibe&metric=alert_status)](https://sonarcloud.io/dashboard?id=molgenis-vibe)
+[![Quality Status](https://sonarcloud.io/api/project_badges/measure?project=molgenis_molgenis-vibe&metric=alert_status)](https://sonarcloud.io/dashboard?id=molgenis_molgenis-vibe)
 
 # molgenis-app-vibe
 
