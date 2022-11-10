@@ -12,7 +12,7 @@
     <owasp-check-format>HTML</owasp-check-format>
     <rpm.release.version>${project.version}</rpm.release.version>
 
-    <dependency-check-maven.version>3.1.2</dependency-check-maven.version>
+    <dependency-check-maven.version>7.3.0</dependency-check-maven.version>
     <rpm-maven-plugin.version>2.2.0</rpm-maven-plugin.version>
 
     <vibe.version>v5.3.0</vibe.version>
