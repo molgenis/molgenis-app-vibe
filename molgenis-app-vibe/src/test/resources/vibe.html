@@ -7,12 +7,12 @@
         <div class="jumbotron">
           <form id="vibe-form">
             <div class="input-group mb-3">
-              <input id="inputPhenotypes" type="text" class="form-control" placeholder="Enter HPO term identifier(s)" aria-label="HPO term(s)" aria-describedby="hpoTermsHelp">
+              <input id="inputPhenotypes" type="text" class="form-control" pattern="(HP:\d{7}, ?){0,9}(HP:\d{7})" placeholder="Enter HPO term identifier(s)" aria-label="HPO term(s)" aria-describedby="hpoTermsHelp">
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary" type="submit" id="executeButton">Execute</button>
               </div>
             </div>
-            <small id="hpoTermsHelp" class="form-text text-muted">Comma-separated list of <a rel="noopener noreferrer" href="https://hpo.jax.org/">Human Phenotype Ontology</a> term identifiers (e.g. HP:0002996).</small>
+            <small id="hpoTermsHelp" class="form-text text-muted">Comma-separated list of <a rel="noopener noreferrer" href="https://hpo.jax.org/">Human Phenotype Ontology</a> term identifiers (e.g. HP:0002996 or HP:0002996,HP:0002997). Max 10 phenotypes allowed.</small>
           </form>
         </div>
         <div id="progress">
